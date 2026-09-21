@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 
 interface CenterVideoPlayerProps {
@@ -12,6 +12,32 @@ export const CenterVideoPlayer: React.FC<CenterVideoPlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Robust autoplay handling
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    const playVideo = async () => {
+      try {
+        await video.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.log("Autoplay waiting:", error);
+      }
+    };
+
+    if (video.readyState >= 3) {
+      playVideo();
+    } else {
+      video.addEventListener("canplay", playVideo, { once: true });
+    }
+
+    return () => {
+      video.removeEventListener("canplay", playVideo);
+    };
+  }, [customVideoUrl]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -50,6 +76,7 @@ export const CenterVideoPlayer: React.FC<CenterVideoPlayerProps> = ({
               loop
               muted={isMuted}
               playsInline
+              preload="auto"
               className="w-full h-full object-contain"
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
