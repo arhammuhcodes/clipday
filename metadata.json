@@ -1,0 +1,6 @@
+{
+  "name": "ClipDay for macOS",
+  "description": "Apple-style landing page for ClipDay, a 24-hour macOS menu bar companion for links, text, and images built exclusively for Apple Silicon.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
